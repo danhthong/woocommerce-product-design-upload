@@ -67,7 +67,7 @@ class WCPDU_Cart_Display {
 
       // File link
       $value .= sprintf(
-        '<a href="%s" target="_blank" rel="noopener">%s</a>',
+        '<a href="%s" target="_blank" rel="noopener" data-wcpdu-lightbox>%s</a>',
         $url,
         $name ? $name : esc_html__( 'View file', 'wcpdu' )
       );

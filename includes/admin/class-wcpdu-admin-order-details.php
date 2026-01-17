@@ -49,6 +49,7 @@ class WCPDU_Admin_Order_Details {
 			return;
 		}
 
+		echo '<div class="form-field form-field-wide wc-customer-uploaded-design-files">';
 		echo '<div class="wcpdu-order-design-files">';
 		echo '<h3>' . esc_html__( 'Customer Design Files', 'wcpdu' ) . '</h3>';
 
@@ -83,7 +84,7 @@ class WCPDU_Admin_Order_Details {
 				// Image preview (detect by file extension, NOT mime)
 				if ( $this->is_image( $file_url ) ) {
 					echo '<img src="' . esc_url( $file_url ) . '"
-						style="max-width:120px;display:block;margin-bottom:6px;
+						style="max-width:240px;display:block;margin-bottom:6px;
 						border:1px solid #ddd;padding:3px;background:#fff;"
 						alt="' . esc_attr( $file_name ) . '" />';
 				}
@@ -100,6 +101,7 @@ class WCPDU_Admin_Order_Details {
 			echo '</div>';
 		}
 
+		echo '</div>';
 		echo '</div>';
 	}
 

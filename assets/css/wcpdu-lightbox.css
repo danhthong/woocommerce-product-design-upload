@@ -1,0 +1,38 @@
+#wcpdu-lightbox {
+  position: fixed;
+  inset: 0;
+  z-index: 999999;
+}
+
+.wcpdu-lightbox-overlay {
+  position: absolute;
+  inset: 0;
+  background: rgba(0,0,0,.85);
+}
+
+.wcpdu-lightbox-content {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+}
+
+.wcpdu-lightbox-content img {
+  max-width: 92vw;
+  max-height: 92vh;
+  background: #fff;
+}
+
+.wcpdu-lightbox-close {
+  position: absolute;
+  top: -14px;
+  right: -14px;
+  width: 32px;
+  height: 32px;
+  background: #000;
+  color: #fff;
+  border-radius: 50%;
+  text-align: center;
+  line-height: 32px;
+  cursor: pointer;
+}

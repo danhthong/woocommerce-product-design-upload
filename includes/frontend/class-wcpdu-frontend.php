@@ -33,10 +33,12 @@ class WCPDU_Frontend {
 		// Frontend core.
 		require_once WCPDU_PLUGIN_DIR . 'includes/frontend/class-wcpdu-upload-field.php';
 		require_once WCPDU_PLUGIN_DIR . 'includes/frontend/class-wcpdu-cart-display.php';
+		require_once WCPDU_PLUGIN_DIR . 'includes/frontend/class-wcpdu-order-display.php';
 
 		// Init classes.
 		new WCPDU_Upload_Field();
 		new WCPDU_Cart_Display();
+		new WCPDU_Order_Display();
 	}
 
 	/**
@@ -51,6 +53,37 @@ class WCPDU_Frontend {
 			[ $this, 'render_upload_field' ],
 			20
 		);
+
+		add_action( 'wp_footer', function () {
+			?>
+			<div id="wcpdu-lightbox" style="display:none;">
+				<div class="wcpdu-lightbox-overlay"></div>
+				<div class="wcpdu-lightbox-content">
+					<img src="" alt="">
+					<span class="wcpdu-lightbox-close">&times;</span>
+				</div>
+			</div>
+			<?php
+		});
+
+		add_action( 'wp_enqueue_scripts', function () {
+
+			wp_enqueue_style(
+				'wcpdu-lightbox',
+				WCPDU_PLUGIN_URL . 'assets/css/wcpdu-lightbox.css',
+				[],
+				WCPDU_VERSION
+			);
+
+			wp_enqueue_script(
+				'wcpdu-lightbox',
+				WCPDU_PLUGIN_URL . 'assets/js/wcpdu-lightbox.js',
+				[ 'jquery' ],
+				WCPDU_VERSION,
+				true
+			);
+		});
+
 	}
 
 	/**
