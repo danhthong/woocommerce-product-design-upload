@@ -1,0 +1,55 @@
+.wcpdu-customizer {
+  margin: 20px 0;
+}
+
+.wcpdu-canvas-wrapper {
+  border: 1px dashed #ccc;
+  width: 450px;
+  height: 450px;
+  margin-top: 10px;
+}
+
+.wcpdu-toolbar {
+  display: flex;
+  gap: 8px;
+  margin-top: 10px;
+}
+
+.wcpdu-btn {
+  appearance: none;
+  border: 1px solid #ccd0d4;
+  background: #fff;
+  color: #1d2327;
+  padding: 6px 12px;
+  border-radius: 4px;
+  font-size: 13px;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.wcpdu-btn:hover {
+  background: #f6f7f7;
+  border-color: #2271b1;
+  color: #2271b1;
+}
+
+.wcpdu-remove-object {
+  border-color: #dc3232;
+  color: #dc3232;
+}
+
+.wcpdu-remove-object:hover {
+  background: #dc3232;
+  color: #fff;
+}
+
+@media (max-width: 600px) {
+  .wcpdu-toolbar {
+    flex-wrap: wrap;
+  }
+
+  .wcpdu-btn {
+    flex: 1;
+    text-align: center;
+  }
+}
