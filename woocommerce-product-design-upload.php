@@ -1,10 +1,10 @@
 <?php
 /**
  * Plugin Name: WooCommerce Product Design Upload
- * Plugin URI: https://danhthong.com
+ * Plugin URI: https://wpdu.danhthong.com
  * Description: Allow customers to upload their own design files when purchasing WooCommerce products.
  * Version: 1.0.0
- * Author: Your Name
+ * Author: Thong Dang
  * Author URI: https://danhthong.com
  * Text Domain: wcpdu
  * Domain Path: /languages
