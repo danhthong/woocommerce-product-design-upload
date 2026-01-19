@@ -1,6 +1,23 @@
 (function ($) {
   "use strict";
 
+  var $input = $("#wcpdu-upload-image");
+  if (!$input.length) return;
+
+  $input.on("change", function () {
+    var file = this.files && this.files[0] ? this.files[0] : null;
+
+    var $nameSpan = $("#file-name");
+    if (!$nameSpan.length) return;
+
+    if (!file) {
+      $nameSpan.text(wcpduCustomizer?.uploadLabel || "Click to upload");
+      return;
+    }
+
+    $nameSpan.text(file.name);
+  });
+
   function openModal() {
     $("#wcpdu-customizer-modal").attr("aria-hidden", "false").show();
     $("body").addClass("wcpdu-modal-open");
@@ -113,7 +130,10 @@
     e.preventDefault();
 
     // Remove active object selection before exporting
-    if (window.wcpduFabricCanvas && typeof window.wcpduFabricCanvas.discardActiveObject === "function") {
+    if (
+      window.wcpduFabricCanvas &&
+      typeof window.wcpduFabricCanvas.discardActiveObject === "function"
+    ) {
       window.wcpduFabricCanvas.discardActiveObject();
       if (typeof window.wcpduFabricCanvas.renderAll === "function") {
         window.wcpduFabricCanvas.renderAll();

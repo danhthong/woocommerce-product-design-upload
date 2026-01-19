@@ -80,20 +80,50 @@ class WCPDU_Customizer {
 					<button type="button" class="wcpdu-modal-close" data-wcpdu-modal-close="1" aria-label="<?php echo esc_attr__( 'Close', 'wcpdu' ); ?>">×</button>
 				</div>
 
-				<div class="wcpdu-modal-body">
-					<input type="file" id="wcpdu-upload-image" name="wcpdu_upload_image" accept="image/*" />
-
-					<div class="wcpdu-canvas-wrapper">
-						<canvas id="wcpdu-canvas" width="450" height="450"></canvas>
+				<div class="wcpdu-modal-body wcpdu-modal-grid">
+					<div class="wcpdu-modal-col wcpdu-modal-col-left">
+						<div class="wcpdu-canvas-wrapper">
+							<canvas id="wcpdu-canvas" width="350" height="350"></canvas>
+						</div>
 					</div>
 
-					<div class="wcpdu-toolbar">
-						<button type="button" class="wcpdu-btn wcpdu-remove-object" aria-label="Remove selected object">
-							✕ <?php echo esc_html__( 'Remove', 'wcpdu' ); ?>
-						</button>
-					</div>
+					<div class="wcpdu-modal-col wcpdu-modal-col-right">
+						<div class="wcpdu-form-block">
+							<label for="wcpdu-upload-image">
+								<?php echo esc_html__( 'Upload Image/Design File', 'wcpdu' ); ?><span>*</span>
+							</label>
 
-					<input type="hidden" id="wcpdu-custom-design" name="wcpdu_custom_design" value="">
+							<label for="wcpdu-upload-image" class="custom-file-upload">
+								<svg width="46" height="46" viewBox="0 0 46 46" fill="none" xmlns="http://www.w3.org/2000/svg">
+									<rect x="3" y="3" width="40" height="40" rx="20" fill="#F2F4F7"></rect>
+									<rect x="3" y="3" width="40" height="40" rx="20" stroke="#F9FAFB" stroke-width="6"></rect>
+									<path d="M19.667 26.3333L23.0003 23M23.0003 23L26.3337 26.3333M23.0003 23V30.5M29.667 26.9524C30.6849 26.1117 31.3337 24.8399 31.3337 23.4167C31.3337 20.8854 29.2816 18.8333 26.7503 18.8333C26.5682 18.8333 26.3979 18.7383 26.3054 18.5814C25.2187 16.7374 23.2124 15.5 20.917 15.5C17.4652 15.5 14.667 18.2982 14.667 21.75C14.667 23.4718 15.3632 25.0309 16.4894 26.1613" stroke="#475467" stroke-width="1.66667" stroke-linecap="round" stroke-linejoin="round"></path>
+								</svg>
+
+								<p id="file-name">
+									<span><?php echo esc_html__( 'Click to upload', 'wcpdu' ); ?></span>
+									<?php echo esc_html__( ' or drag and drop', 'wcpdu' ); ?>
+									<br>
+									<?php echo esc_html__( 'SVG, PNG, JPG (max. 800x400px)', 'wcpdu' ); ?>
+								</p>
+							</label>
+
+							<input
+								id="wcpdu-upload-image"
+								type="file"
+								name="wcpdu_upload_image"
+								accept=".svg,.png,.jpg,.jpeg"
+							/>
+						</div>
+
+						<div class="wcpdu-toolbar">
+							<button type="button" class="wcpdu-btn wcpdu-remove-object" aria-label="<?php echo esc_attr__( 'Remove selected object', 'wcpdu' ); ?>">
+								✕ <?php echo esc_html__( 'Clear image', 'wcpdu' ); ?>
+							</button>
+						</div>
+
+						<input type="hidden" id="wcpdu-custom-design" name="wcpdu_custom_design" value="">
+					</div>
 				</div>
 
 				<div class="wcpdu-modal-footer">

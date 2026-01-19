@@ -1,8 +1,16 @@
+/**
+ * Modal styles for product customizer (two columns).
+ *
+ * @package WooCommerce_Product_Design_Upload
+ */
+
 .wcpdu-entry {
   margin-bottom: 16px;
 }
 
 .wcpdu-open-customizer {
+  padding: 10px 24px;
+  line-height: 24px;
   background-color: #2271b1;
   border-color: #2271b1;
   color: #fff;
@@ -71,8 +79,49 @@
   padding: 14px 16px;
 }
 
-.wcpdu-canvas-wrapper {
+/* Two-column layout */
+.wcpdu-modal-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 24px;
+  align-items: start;
+}
+
+.wcpdu-modal-col {
+  min-width: 0;
+}
+
+.wcpdu-modal-col-left .wcpdu-canvas-wrapper {
   margin-top: 12px;
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  border: 1px solid #eee;
+  border-radius: 10px;
+}
+
+#wcpdu-canvas {
+  display: block;
+  max-width: 100%;
+  height: auto;
+}
+
+.wcpdu-form-block {
+  margin-bottom: 12px;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.wcpdu-form-block label {
+  font-weight: 600;
+  font-size: 16px;
+}
+
+.wcpdu-form-block textarea {
+  width: 100%;
+  resize: vertical;
 }
 
 .wcpdu-toolbar {
@@ -90,18 +139,23 @@
   gap: 8px;
 }
 
+.wcpdu-modal-footer .button {
+  width: 50%;
+  padding: 10px;
+  line-height: 26px;
+}
+
 /* Modal footer buttons */
 .wcpdu-modal-footer .wcpdu-cancel {
-  background-color: #d63638;
-  border-color: #d63638;
-  color: #fff;
+  background-color: transparent;
+  border: 1px solid #d63638;
+  color: #d63638;
 }
 
 .wcpdu-modal-footer .wcpdu-cancel:hover,
 .wcpdu-modal-footer .wcpdu-cancel:focus {
-  background-color: #b32d2e;
   border-color: #b32d2e;
-  color: #fff;
+  color: #b32d2e;
 }
 
 .wcpdu-modal-footer .wcpdu-apply {
@@ -115,4 +169,36 @@
   background-color: #135e96;
   border-color: #135e96;
   color: #fff;
+}
+
+@media (max-width: 860px) {
+  .wcpdu-modal-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* Hide the real input, keep it accessible via the label click */
+#wcpdu-upload-image {
+  position: absolute !important;
+  width: 1px !important;
+  height: 1px !important;
+  padding: 0 !important;
+  margin: -1px !important;
+  overflow: hidden !important;
+  clip: rect(0, 0, 0, 0) !important;
+  white-space: nowrap !important;
+  border: 0 !important;
+}
+
+.custom-file-upload {
+  align-items: center;
+  background: #fff;
+  border: 1px solid #eaecf0;
+  border-radius: 12px;
+  cursor: pointer;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  padding: 16px 24px;
+  font-size: 14px;
 }

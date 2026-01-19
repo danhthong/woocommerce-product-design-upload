@@ -44,7 +44,10 @@ jQuery(function ($) {
   fabric.Image.fromURL(
     wcpduCustomizer.productImage,
     function (img) {
-      const scale = Math.min(canvas.width / img.width, canvas.height / img.height);
+      const scale = Math.min(
+        canvas.width / img.width,
+        canvas.height / img.height,
+      );
 
       img.set({
         originX: "center",
@@ -58,7 +61,7 @@ jQuery(function ($) {
       img.scale(scale);
       canvas.setBackgroundImage(img, canvas.renderAll.bind(canvas));
     },
-    { crossOrigin: "anonymous" }
+    { crossOrigin: "anonymous" },
   );
 
   /**
@@ -100,15 +103,66 @@ jQuery(function ($) {
   /**
    * 3️⃣ Remove selected object
    */
-  $(document).on("click", ".wcpdu-remove-object", function () {
-    const obj = canvas.getActiveObject();
-    if (!obj || obj === canvas.backgroundImage) {
+  function restoreUploadLabel() {
+    var $p = $("#file-name");
+    if (!$p.length) return;
+
+    var defaultSpanText = $p.data("default-span");
+    var defaultHtml = $p.data("default-html");
+
+    if (!defaultSpanText) {
+      defaultSpanText = $p.find("span").first().text();
+      $p.data("default-span", defaultSpanText);
+    }
+
+    if (!defaultHtml) {
+      defaultHtml = $p.html();
+      $p.data("default-html", defaultHtml);
+    }
+
+    $p.html(defaultHtml);
+  }
+
+  function removeUserImageLayer() {
+    if (
+      !window.wcpduFabricCanvas ||
+      typeof window.wcpduFabricCanvas.getObjects !== "function"
+    ) {
       return;
     }
 
-    canvas.remove(obj);
+    var canvas = window.wcpduFabricCanvas;
+
+    var toRemove = canvas.getObjects().filter(function (obj) {
+      return obj && obj.wcpduType === "user-image";
+    });
+
+    toRemove.forEach(function (obj) {
+      canvas.remove(obj);
+    });
+
     canvas.discardActiveObject();
     canvas.renderAll();
+  }
+
+  // Store the default label HTML once (on DOM ready).
+  restoreUploadLabel();
+
+  // On file select, only replace the <span> text with the filename.
+  $(document).on("change", "#wcpdu-upload-image", function () {
+    var file = this.files && this.files[0] ? this.files[0] : null;
+    if (!file) return;
+
+    $("#file-name span").first().text(file.name);
+  });
+
+  // Clear image button: remove layer + clear input + restore the full label markup.
+  $(document).on("click", ".wcpdu-remove-object", function (e) {
+    e.preventDefault();
+
+    $("#wcpdu-upload-image").val("");
+    restoreUploadLabel();
+    removeUserImageLayer();
   });
 
   /**
