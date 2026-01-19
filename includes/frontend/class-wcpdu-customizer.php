@@ -122,6 +122,15 @@ class WCPDU_Customizer {
 							</button>
 						</div>
 
+						<p class="wcpdu-tooltip">
+							<?php
+							echo wp_kses_post(
+								__( 'Tip: Click the image on the left to select it. Drag to move it, use the corner handles to resize, and drag while holding <strong>Shift</strong> to keep proportions.', 'wcpdu' )
+							);
+							?>
+						</p>
+
+
 						<input type="hidden" id="wcpdu-custom-design" name="wcpdu_custom_design" value="">
 					</div>
 				</div>
