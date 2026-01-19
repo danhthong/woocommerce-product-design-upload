@@ -59,6 +59,7 @@ Currently the customizer is intended for a single uploaded image layer. You can 
 1. Customize button on the product page.
 2. Customizer modal with canvas and uploaded image layer.
 3. Admin order screen showing uploaded design files per line item.
+4. Product Design Upload Settings
 
 == Changelog ==
 
