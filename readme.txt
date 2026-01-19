@@ -1,4 +1,4 @@
-=== WooCommerce Product Design Upload ===
+=== Product Design Upload for eCommerce ===
 Contributors: danhthong
 Tags: woocommerce, product customizer, design upload, fabricjs, image upload, product personalization
 Requires at least: 6.0
@@ -12,7 +12,7 @@ Let customers upload an image, position it on a product canvas, and save the fin
 
 == Description ==
 
-WooCommerce Product Design Upload adds a simple product customizer to WooCommerce products.
+Product Design Upload for eCommerce adds a simple product customizer to WooCommerce products.
 
 Features:
 * Enable/disable design upload per product.
@@ -27,7 +27,7 @@ This plugin is designed for stores that sell personalized products (e.g., t-shir
 
 == Installation ==
 
-1. Upload the plugin folder to `/wp-content/plugins/woocommerce-product-design-upload/`, or install the ZIP via Plugins → Add New → Upload Plugin.
+1. Upload the plugin folder to `/wp-content/plugins/product-design-upload/`, or install the ZIP via Plugins → Add New → Upload Plugin.
 2. Activate the plugin through the "Plugins" screen in WordPress.
 3. Make sure WooCommerce is installed and active.
 4. Edit a product and enable the customizer (see "Usage").

@@ -1,6 +1,6 @@
 <?php
 /**
- * Plugin Name: WooCommerce Product Design Upload
+ * Plugin Name: Product Design Upload for eCommerce
  * Plugin URI: https://wpdu.danhthong.com
  * Description: Allow customers to upload their own design files when purchasing WooCommerce products.
  * Version: 1.0.0
