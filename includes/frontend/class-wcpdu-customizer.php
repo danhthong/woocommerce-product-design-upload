@@ -70,7 +70,6 @@ class WCPDU_Customizer {
 			</button>
 		</div>
 
-
 		<div id="wcpdu-customizer-modal" class="wcpdu-modal" aria-hidden="true" style="display:none;">
 			<div class="wcpdu-modal-overlay" data-wcpdu-modal-close="1"></div>
 
@@ -130,6 +129,7 @@ class WCPDU_Customizer {
 							?>
 						</p>
 
+						<?php wp_nonce_field( 'wcpdu_add_to_cart', 'wcpdu_nonce' ); ?>
 
 						<input type="hidden" id="wcpdu-custom-design" name="wcpdu_custom_design" value="">
 					</div>

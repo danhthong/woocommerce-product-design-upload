@@ -53,13 +53,41 @@ class WCPDU_Admin_Product_Meta {
 	/**
 	 * Save product option.
 	 *
-	 * @param WC_Product $product
+	 * @param WC_Product $product Product object.
 	 * @return void
 	 */
 	public function save_product_option( $product ) {
 
-		$value = isset( $_POST[ self::META_KEY ] ) ? 'yes' : 'no';
+		if ( ! is_admin() ) {
+			return;
+		}
+
+		if ( ! $product instanceof WC_Product ) {
+			return;
+		}
+
+		if ( ! $this->verify_woocommerce_product_nonce() ) {
+			return;
+		}
+
+		$value = isset( $_POST[ self::META_KEY ] ) ? 'yes' : 'no'; // phpcs:ignore WordPress.Security.NonceVerification.Missing
 
 		$product->update_meta_data( self::META_KEY, $value );
+	}
+
+	/**
+	 * Verify WooCommerce product edit nonce.
+	 *
+	 * @return bool
+	 */
+	private function verify_woocommerce_product_nonce() {
+
+		if ( empty( $_POST['woocommerce_meta_nonce'] ) ) { // phpcs:ignore WordPress.Security.NonceVerification.Missing
+			return false;
+		}
+
+		$nonce = sanitize_text_field( wp_unslash( $_POST['woocommerce_meta_nonce'] ) ); // phpcs:ignore WordPress.Security.NonceVerification.Missing
+
+		return (bool) wp_verify_nonce( $nonce, 'woocommerce_save_data' );
 	}
 }

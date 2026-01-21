@@ -37,7 +37,6 @@ class WCPDU_Cart_Display {
 	 * - name (optional)
 	 * - url  (required)
 	 * - kind (optional): uploaded | final
-	 * - type (optional): mime string
 	 *
 	 * @param array $item_data
 	 * @param array $cart_item
@@ -87,7 +86,7 @@ class WCPDU_Cart_Display {
 	}
 
 	/**
-	 * Render files list HTML (with image preview if possible).
+	 * Render files list HTML.
 	 *
 	 * @param array $files
 	 * @return string
@@ -100,21 +99,20 @@ class WCPDU_Cart_Display {
 
 			$name = isset( $file['name'] ) ? (string) $file['name'] : '';
 			$url  = isset( $file['url'] ) ? (string) $file['url'] : '';
-			$mime = isset( $file['type'] ) ? (string) $file['type'] : '';
 
-			$url_esc = esc_url( $url );
-			if ( empty( $url_esc ) ) {
+			$url_safe = esc_url( $url );
+			if ( empty( $url_safe ) ) {
 				continue;
 			}
 
-			$label = $name ? esc_html( $name ) : esc_html__( 'View file', 'product-design-upload-for-ecommerce' );
+			$label_raw = $name ? $name : __( 'View file', 'product-design-upload-for-ecommerce' );
 
 			$html .= '<div class="wcpdu-cart-file" style="margin:0 0 10px;">';
 
 			$html .= sprintf(
 				'<a href="%1$s" rel="noopener" data-wcpdu-lightbox>%2$s</a>',
-				$url_esc,
-				$label
+				$url_safe,
+				esc_html( $label_raw )
 			);
 
 			$html .= '</div>';
@@ -123,26 +121,5 @@ class WCPDU_Cart_Display {
 		$html .= '</div>';
 
 		return $html;
-	}
-
-	/**
-	 * Detect image by MIME or URL extension.
-	 *
-	 * @param string $mime
-	 * @param string $url
-	 * @return bool
-	 */
-	private function is_image( $mime, $url ) {
-
-		$mime = (string) $mime;
-
-		if ( in_array( $mime, [ 'image/jpeg', 'image/png', 'image/webp', 'image/gif' ], true ) ) {
-			return true;
-		}
-
-		$path = parse_url( (string) $url, PHP_URL_PATH );
-		$ext  = strtolower( pathinfo( (string) $path, PATHINFO_EXTENSION ) );
-
-		return in_array( $ext, [ 'jpg', 'jpeg', 'png', 'webp', 'gif' ], true );
 	}
 }

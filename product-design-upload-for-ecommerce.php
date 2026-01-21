@@ -2,7 +2,7 @@
 /**
  * Plugin Name: Product Design Upload for eCommerce
  * Plugin URI: https://wpdu.danhthong.com
- * Description: Allow customers to upload their own design files when purchasing WooCommerce products.
+ * Description: Allow customers to upload design files when purchasing products.
  * Version: 1.0.0
  * Author: Thong Dang
  * Author URI: https://danhthong.com
@@ -15,7 +15,7 @@
  */
 
 if ( ! defined( 'ABSPATH' ) ) {
-    exit;
+	exit;
 }
 
 /**
@@ -30,15 +30,6 @@ define( 'WCPDU_PLUGIN_URL', plugin_dir_url( __FILE__ ) );
 
 /**
  * ------------------------------------------------------------------------
- * CHECK WOOCOMMERCE
- * ------------------------------------------------------------------------
- */
-if ( ! in_array( 'woocommerce/woocommerce.php', apply_filters( 'active_plugins', get_option( 'active_plugins' ) ), true ) ) {
-	return;
-}
-
-/**
- * ------------------------------------------------------------------------
  * LOAD CORE FILES
  * ------------------------------------------------------------------------
  */
@@ -48,26 +39,33 @@ require_once WCPDU_PLUGIN_DIR . 'includes/class-wcpdu-deactivator.php';
 
 /**
  * ------------------------------------------------------------------------
- * ACTIVATE / DEACTIVATE (MUST BE HERE)
+ * ACTIVATE / DEACTIVATE
  * ------------------------------------------------------------------------
  */
 register_activation_hook(
 	__FILE__,
-	array( 'WCPDU_Activator', 'activate' )
+	[ 'WCPDU_Activator', 'activate' ]
 );
 
 register_deactivation_hook(
 	__FILE__,
-	array( 'WCPDU_Deactivator', 'deactivate' )
+	[ 'WCPDU_Deactivator', 'deactivate' ]
 );
 
 /**
  * ------------------------------------------------------------------------
- * RUN PLUGIN
+ * BOOTSTRAP
  * ------------------------------------------------------------------------
  */
-function run_wcpdu() {
-	new WCPDU_Loader();
-}
+add_action(
+	'plugins_loaded',
+	static function () {
 
-run_wcpdu();
+		if ( ! class_exists( 'WooCommerce' ) ) {
+			return;
+		}
+
+		new WCPDU_Loader();
+	},
+	20
+);

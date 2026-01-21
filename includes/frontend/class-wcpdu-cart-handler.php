@@ -23,6 +23,20 @@ class WCPDU_Cart_Handler {
 	private $wcpdu_force_dir = false;
 
 	/**
+	 * Nonce action.
+	 *
+	 * @var string
+	 */
+	private $nonce_action = 'wcpdu_add_to_cart';
+
+	/**
+	 * Nonce field name.
+	 *
+	 * @var string
+	 */
+	private $nonce_name = 'wcpdu_nonce';
+
+	/**
 	 * Register hooks.
 	 */
 	public function __construct() {
@@ -38,39 +52,36 @@ class WCPDU_Cart_Handler {
 	 * @return array Modified cart item data.
 	 */
 	public function add_cart_item_data( $cart_item_data, $product_id, $variation_id ) {
+
+		if ( ! $this->verify_nonce_from_post() ) {
+			return $cart_item_data;
+		}
+
 		$uploads = wp_upload_dir();
 		$data    = [];
 
 		/**
 		 * 1) Save FINAL canvas image (base64 -> PNG) into uploads/wcpdu-designs/mm/dd/
 		 */
-		if ( ! empty( $_POST['wcpdu_custom_design'] ) && is_string( $_POST['wcpdu_custom_design'] ) ) {
-			$base64 = wp_unslash( $_POST['wcpdu_custom_design'] );
+		$png_bytes = $this->get_canvas_png_bytes_from_post();
 
-			if ( str_contains( $base64, 'base64,' ) ) {
-				$base64 = substr( $base64, strpos( $base64, 'base64,' ) + 7 );
-			}
+		if ( '' !== $png_bytes ) {
+			$subdir     = $this->get_wcpdu_subdir();
+			$target_dir = trailingslashit( $uploads['basedir'] ) . $subdir;
 
-			$image_data = base64_decode( $base64 );
+			wp_mkdir_p( $target_dir );
 
-			if ( $image_data !== false ) {
-				$subdir     = $this->get_wcpdu_subdir();
-				$target_dir = trailingslashit( $uploads['basedir'] ) . $subdir;
+			$filename  = wp_unique_filename( $target_dir, 'wcpdu-final-' . wp_generate_uuid4() . '.png' );
+			$file_path = $target_dir . $filename;
 
-				wp_mkdir_p( $target_dir );
+			$written = file_put_contents( $file_path, $png_bytes );
 
-				$filename  = 'wcpdu-final-' . wp_generate_uuid4() . '.png';
-				$file_path = $target_dir . $filename;
-
-				$written = file_put_contents( $file_path, $image_data );
-
-				if ( $written !== false && file_exists( $file_path ) ) {
-					$data['final'] = [
-						'url'  => trailingslashit( $uploads['baseurl'] ) . $subdir . $filename,
-						'path' => $file_path,
-						'kind' => 'final',
-					];
-				}
+			if ( false !== $written && file_exists( $file_path ) ) {
+				$data['final'] = [
+					'url'  => trailingslashit( $uploads['baseurl'] ) . $subdir . $filename,
+					'path' => $file_path,
+					'kind' => 'final',
+				];
 			}
 		}
 
@@ -80,7 +91,7 @@ class WCPDU_Cart_Handler {
 		if (
 			! empty( $_FILES['wcpdu_upload_image'] ) &&
 			isset( $_FILES['wcpdu_upload_image']['error'] ) &&
-			$_FILES['wcpdu_upload_image']['error'] === UPLOAD_ERR_OK
+			UPLOAD_ERR_OK === (int) $_FILES['wcpdu_upload_image']['error']
 		) {
 			if ( ! function_exists( 'wp_handle_upload' ) ) {
 				require_once ABSPATH . 'wp-admin/includes/file.php';
@@ -103,8 +114,8 @@ class WCPDU_Cart_Handler {
 
 			if ( is_array( $upload ) && empty( $upload['error'] ) ) {
 				$data['original'] = [
-					'url'  => $upload['url'],
-					'path' => $upload['file'],
+					'url'  => isset( $upload['url'] ) ? (string) $upload['url'] : '',
+					'path' => isset( $upload['file'] ) ? (string) $upload['file'] : '',
 					'kind' => 'uploaded',
 				];
 			}
@@ -119,6 +130,68 @@ class WCPDU_Cart_Handler {
 		}
 
 		return $cart_item_data;
+	}
+
+	/**
+	 * Verify nonce from POST.
+	 *
+	 * @return bool
+	 */
+	private function verify_nonce_from_post() {
+
+		if ( empty( $_POST[ $this->nonce_name ] ) ) { // phpcs:ignore WordPress.Security.NonceVerification.Missing
+			return false;
+		}
+
+		$nonce = sanitize_text_field( wp_unslash( $_POST[ $this->nonce_name ] ) ); // phpcs:ignore WordPress.Security.NonceVerification.Missing
+
+		return (bool) wp_verify_nonce( $nonce, $this->nonce_action );
+	}
+
+	/**
+	 * Get PNG bytes from the posted canvas data URL.
+	 *
+	 * @return string PNG binary bytes or empty string on failure.
+	 */
+	private function get_canvas_png_bytes_from_post() {
+
+		if ( empty( $_POST['wcpdu_custom_design'] ) || ! is_string( $_POST['wcpdu_custom_design'] ) ) { // phpcs:ignore WordPress.Security.NonceVerification.Missing
+			return '';
+		}
+
+		$raw = (string) wp_unslash( $_POST['wcpdu_custom_design'] ); // phpcs:ignore WordPress.Security.NonceVerification.Missing
+
+		if ( '' === $raw ) {
+			return '';
+		}
+
+		$raw = trim( $raw );
+
+		if ( str_starts_with( $raw, 'data:image' ) ) {
+			$pos = strpos( $raw, 'base64,' );
+			if ( false === $pos ) {
+				return '';
+			}
+			$raw = substr( $raw, $pos + 7 );
+		}
+
+		$raw = preg_replace( '/\s+/', '', $raw );
+		$raw = (string) $raw;
+
+		if ( '' === $raw ) {
+			return '';
+		}
+
+		if ( ! preg_match( '/^[A-Za-z0-9+\/=]+$/', $raw ) ) {
+			return '';
+		}
+
+		$bytes = base64_decode( $raw, true );
+		if ( false === $bytes || '' === $bytes ) {
+			return '';
+		}
+
+		return $bytes;
 	}
 
 	/**

@@ -1,18 +1,19 @@
 === Product Design Upload for eCommerce ===
 Contributors: danhthong
-Tags: woocommerce, product customizer, design upload, fabricjs, image upload, product personalization
+Tags: product customizer, design upload, fabricjs, product personalization, ecommerce
 Requires at least: 6.0
 Tested up to: 6.9
 Requires PHP: 7.4
+Requires Plugins: woocommerce
 Stable tag: 1.0.0
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
-Let customers upload an image, position it on a product canvas, and save the final design with the cart/order in WooCommerce.
+Let customers upload an image, position it on a product canvas, and save the final design with the cart/order.
 
 == Description ==
 
-Product Design Upload for eCommerce adds a simple product customizer to WooCommerce products.
+Product Design Upload for eCommerce adds a simple product customizer to products.
 
 Features:
 * Enable/disable design upload per product.
@@ -25,9 +26,13 @@ Features:
 
 This plugin is designed for stores that sell personalized products (e.g., t-shirts, mugs, phone cases, posters).
 
+= Third-party libraries =
+This plugin bundles Fabric.js for the canvas editor functionality.
+Fabric.js is licensed under the MIT License. The Fabric.js license file is included in the plugin package.
+
 == Installation ==
 
-1. Upload the plugin folder to `/wp-content/plugins/product-design-upload/`, or install the ZIP via Plugins → Add New → Upload Plugin.
+1. Upload the plugin folder to `/wp-content/plugins/product-design-upload-for-ecommerce/`, or install the ZIP via Plugins → Add New → Upload Plugin.
 2. Activate the plugin through the "Plugins" screen in WordPress.
 3. Make sure WooCommerce is installed and active.
 4. Edit a product and enable the customizer (see "Usage").
@@ -41,7 +46,6 @@ This plugin is designed for stores that sell personalized products (e.g., t-shir
 5. Upload an image, move/scale it on the canvas, then click "Apply".
 6. Add to cart. The merged PNG is saved and attached to the cart item and order item meta.
 
-
 == Frequently Asked Questions ==
 
 = Does this plugin require WooCommerce? =
@@ -50,7 +54,7 @@ Yes. WooCommerce must be installed and active.
 = Where are uploaded/generated files stored? =
 Files are stored under the WordPress uploads directory. The plugin uses a dedicated subfolder for design assets.
 
-= Does this work with WooCommerce zoom/lightbox? =
+= Does this work with product zoom/lightbox? =
 Yes. The plugin updates the product gallery image and attempts to refresh zoom overlays (including `.zoomImg` used by some themes/plugins).
 
 = Can I allow multiple uploaded layers? =

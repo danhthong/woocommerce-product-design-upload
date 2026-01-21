@@ -143,23 +143,22 @@ class WCPDU_Admin_Order_Details {
 			$file_url  = isset( $file['url'] ) ? (string) $file['url'] : '';
 			$file_name = isset( $file['name'] ) ? (string) $file['name'] : '';
 
-			if ( empty( $file_url ) ) {
+			if ( '' === $file_url ) {
 				continue;
 			}
 
-			$file_url_esc = esc_url( $file_url );
-			$label        = $file_name ? esc_html( $file_name ) : esc_html__( 'Download file', 'product-design-upload-for-ecommerce' );
+			$label_raw = $file_name ? $file_name : __( 'View file', 'product-design-upload-for-ecommerce' );
 
 			echo '<li style="margin:0 0 12px;display:flex;flex-direction:column;">';
 
 			if ( $this->is_image( $file_url ) ) {
-				echo '<a href="' . $file_url_esc . '" data-wcpdu-lightbox="1">';
-				echo '<img src="' . $file_url_esc . '" style="max-width:150px;display:block;margin:6px 0;border:1px solid #ddd;padding:3px;background:#fff;" alt="' . esc_attr( wp_strip_all_tags( $file_name ) ) . '" />';
+				echo '<a href="' . esc_url( $file_url ) . '" data-wcpdu-lightbox="1">';
+				echo '<img src="' . esc_url( $file_url ) . '" style="max-width:150px;display:block;margin:6px 0;border:1px solid #ddd;padding:3px;background:#fff;" alt="' . esc_attr( wp_strip_all_tags( $file_name ) ) . '" />';
 				echo '</a>';
 			}
 
-			echo '<a href="' . $file_url_esc . '" download>';
-			echo $label;
+			echo '<a href="' . esc_url( $file_url ) . '" download>';
+			echo esc_html( $label_raw );
 			echo '</a>';
 
 			echo '</li>';
@@ -181,7 +180,7 @@ class WCPDU_Admin_Order_Details {
 			return false;
 		}
 
-		$path = parse_url( $url, PHP_URL_PATH );
+		$path = wp_parse_url( $url, PHP_URL_PATH );
 		$ext  = strtolower( pathinfo( (string) $path, PATHINFO_EXTENSION ) );
 
 		return in_array(
