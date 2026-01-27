@@ -37,7 +37,7 @@ class WCPDU_Order_Display {
     }
 
     echo '<div class="wcpdu-order-files">';
-    echo '<strong>' . esc_html__( 'Uploaded design files:', 'product-design-upload-for-ecommerce' ) . '</strong>';
+    echo '<strong>' . esc_html__( 'Uploaded design files:', 'ro-print-design-upload' ) . '</strong>';
     echo '<ul>';
 
     foreach ( $files as $file ) {

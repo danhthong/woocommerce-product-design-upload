@@ -49,8 +49,8 @@ class WCPDU_Admin {
 
 		add_submenu_page(
 			'woocommerce',
-			__( 'Design Upload', 'product-design-upload-for-ecommerce' ),
-			__( 'Design Upload', 'product-design-upload-for-ecommerce' ),
+			__( 'Design Upload', 'ro-print-design-upload' ),
+			__( 'Design Upload', 'ro-print-design-upload' ),
 			'manage_woocommerce',
 			'wcpdu-settings',
 			[ $this, 'render_settings_page' ]
@@ -69,7 +69,7 @@ class WCPDU_Admin {
 		}
 
 		echo '<div class="wrap">';
-		echo '<h1>' . esc_html__( 'Product Design Upload Settings', 'product-design-upload-for-ecommerce' ) . '</h1>';
+		echo '<h1>' . esc_html__( 'Product Design Upload Settings', 'ro-print-design-upload' ) . '</h1>';
 
 		/**
 		 * Settings page content will be handled here

@@ -1,4 +1,4 @@
-=== Product Design Upload for eCommerce ===
+=== RO Print Design Upload ===
 Contributors: danhthong
 Tags: product customizer, design upload, fabricjs, product personalization, ecommerce
 Requires at least: 6.0
@@ -13,7 +13,7 @@ Let customers upload an image, position it on a product canvas, and save the fin
 
 == Description ==
 
-Product Design Upload for eCommerce adds a simple product customizer to products.
+RO Print Design Upload adds a simple product customizer to products.
 
 Features:
 * Enable/disable design upload per product.
@@ -32,7 +32,7 @@ Fabric.js is licensed under the MIT License. The Fabric.js license file is inclu
 
 == Installation ==
 
-1. Upload the plugin folder to `/wp-content/plugins/product-design-upload-for-ecommerce/`, or install the ZIP via Plugins → Add New → Upload Plugin.
+1. Upload the plugin folder to `/wp-content/plugins/ro-print-design-upload/`, or install the ZIP via Plugins → Add New → Upload Plugin.
 2. Activate the plugin through the "Plugins" screen in WordPress.
 3. Make sure WooCommerce is installed and active.
 4. Edit a product and enable the customizer (see "Usage").

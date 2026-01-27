@@ -135,7 +135,7 @@ class WCPDU_Admin_Order_Details {
 		}
 
 		echo '<div class="wcpdu-order-item-files" style="margin-top:8px;">';
-		echo '<strong>' . esc_html__( 'Design Files', 'product-design-upload-for-ecommerce' ) . '</strong>';
+		echo '<strong>' . esc_html__( 'Design Files', 'ro-print-design-upload' ) . '</strong>';
 		echo '<ul style="margin:8px 0 0;display:flex;gap:12px;">';
 
 		foreach ( $files as $file ) {
@@ -147,7 +147,7 @@ class WCPDU_Admin_Order_Details {
 				continue;
 			}
 
-			$label_raw = $file_name ? $file_name : __( 'View file', 'product-design-upload-for-ecommerce' );
+			$label_raw = $file_name ? $file_name : __( 'View file', 'ro-print-design-upload' );
 
 			echo '<li style="margin:0 0 12px;display:flex;flex-direction:column;">';
 
