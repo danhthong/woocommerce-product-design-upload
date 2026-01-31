@@ -85,10 +85,10 @@ class WCPDU_Admin_Product_Meta {
         'description' => __( 'Optional. Upload a PNG used to limit the editable/design area. Recommended: PNG where allowed area is transparent (window) and outside area is opaque (frame).', 'danhthong-print-design-upload' ),
     ]);
 
-    echo '<p class="form-field wcpdu-img-clipping-actions" style="margin-left:160px;">';
-    echo ' <button type="button" class="button wcpdu-upload-img-clipping">' . esc_html__( 'Upload', 'danhthong-print-design-upload' ) . '</button>';
+    echo '<p class="form-field wcpdu-img-clipping-actions">';
+    echo ' <button type="button" class="button button-primary wcpdu-upload-img-clipping">' . esc_html__( 'Upload', 'danhthong-print-design-upload' ) . '</button>';
     echo ' <button type="button" class="button wcpdu-remove-img-clipping">' . esc_html__( 'Remove', 'danhthong-print-design-upload' ) . '</button>';
-    echo '<br/><img class="wcpdu-img-clipping-preview" src="' . esc_url( $img_clipping ) . '" style="max-width:180px;height:auto;display:' . ( $img_clipping ? 'inline-block' : 'none' ) . ';margin-top:8px;border:1px solid #ccd0d4;padding:4px;background:#fff;" alt="" />';
+    echo '<br/><img class="wcpdu-img-clipping-preview" src="' . esc_url( $img_clipping ) . '" style="max-width:180px;height:auto;display:' . ( $img_clipping ? 'inline-block' : 'none' ) . ';margin-top:8px;border:1px solid #ccd0d4;padding:4px;background:#ccd0d4;" alt="" />';
     echo '</p>';
 
     echo '</div>';
