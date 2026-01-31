@@ -60,6 +60,8 @@ class WCPDU_Customizer {
 		}
 
 		$enabled = $product->get_meta( '_wcpdu_enable_upload' );
+
+		$img_clipping = (string) $product->get_meta( '_wcpdu_img_clipping' );
 		if ( 'yes' !== $enabled ) {
 			return;
 		}
@@ -82,7 +84,10 @@ class WCPDU_Customizer {
 				<div class="wcpdu-modal-body wcpdu-modal-grid">
 					<div class="wcpdu-modal-col wcpdu-modal-col-left">
 						<div class="wcpdu-canvas-wrapper">
-							<canvas id="wcpdu-canvas" width="350" height="350"></canvas>
+						<?php
+						$canvas_attr = $img_clipping ? ' data-img-clipping="' . esc_url( $img_clipping ) . '"' : '';
+						?>
+						<canvas id="wcpdu-canvas" width="350" height="350"<?php echo $canvas_attr; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?>></canvas>
 						</div>
 					</div>
 

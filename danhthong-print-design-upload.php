@@ -3,7 +3,7 @@
  * Plugin Name: DanhThong Print Design Upload
  * Plugin URI: https://wpdu.danhthong.com
  * Description: Allow customers to upload design files when purchasing products.
- * Version: 1.0.0
+ * Version: 1.0.1
  * Author: Thong Dang
  * Author URI: https://danhthong.com
  * Text Domain: danhthong-print-design-upload
@@ -23,7 +23,7 @@ if ( ! defined( 'ABSPATH' ) ) {
  * CONSTANTS
  * ------------------------------------------------------------------------
  */
-define( 'WCPDU_VERSION', '1.0.0' );
+define( 'WCPDU_VERSION', '1.0.1' );
 define( 'WCPDU_PLUGIN_FILE', __FILE__ );
 define( 'WCPDU_PLUGIN_DIR', plugin_dir_path( __FILE__ ) );
 define( 'WCPDU_PLUGIN_URL', plugin_dir_url( __FILE__ ) );

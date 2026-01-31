@@ -1,6 +1,6 @@
 jQuery(function ($) {
   const canvasEl = document.getElementById("wcpdu-canvas");
-  if (!canvasEl || !window.fabric || !wcpduCustomizer?.productImage) {
+  if (!canvasEl || !window.fabric || !window.wcpduCustomizer?.productImage) {
     return;
   }
 
@@ -10,6 +10,118 @@ jQuery(function ($) {
   });
 
   window.wcpduFabricCanvas = canvas;
+
+  const dataImgClipping = canvasEl.getAttribute("data-img-clipping") || "";
+
+  // We keep ONE loaded mask image as a source, then CLONE it when applying clipPath.
+  let clipMaskSource = null;
+  let frontOverlay = null;
+
+  /**
+   * Load clipping mask source image (only once), then return a NEW clipPath instance each time.
+   * Important:
+   * - Fabric's clipPath keeps the OPAQUE part. If your mask PNG is a "frame" (outside opaque, inside transparent),
+   *   you MUST set inverted: true so the transparent "window" becomes the allowed area.
+   * - Do NOT reuse the same fabric object instance as clipPath and as an overlay on canvas.
+   */
+  function loadClipMask(done) {
+    if (!dataImgClipping) {
+      done(null);
+      return;
+    }
+
+    // If already loaded source, just clone a fresh clipPath from it.
+    if (clipMaskSource) {
+      const clip = fabric.util.object.clone(clipMaskSource);
+      clip.set({
+        originX: "center",
+        originY: "center",
+        left: canvas.width / 2,
+        top: canvas.height / 2,
+        absolutePositioned: true,
+        inverted: true, // ✅ key fix for "frame" PNGs
+      });
+      clip.scaleToWidth(canvas.width);
+      clip.scaleToHeight(canvas.height);
+      done(clip);
+      return;
+    }
+
+    fabric.Image.fromURL(
+      dataImgClipping,
+      function (maskImg) {
+        // Store source (not used directly as clipPath).
+        maskImg.set({
+          originX: "center",
+          originY: "center",
+          left: canvas.width / 2,
+          top: canvas.height / 2,
+          selectable: false,
+          evented: false,
+          absolutePositioned: true,
+        });
+
+        maskImg.scaleToWidth(canvas.width);
+        maskImg.scaleToHeight(canvas.height);
+
+        clipMaskSource = maskImg;
+
+        // Return a fresh clipPath clone
+        const clip = fabric.util.object.clone(clipMaskSource);
+        clip.set({
+          originX: "center",
+          originY: "center",
+          left: canvas.width / 2,
+          top: canvas.height / 2,
+          absolutePositioned: true,
+          inverted: true, // ✅ key fix
+        });
+        clip.scaleToWidth(canvas.width);
+        clip.scaleToHeight(canvas.height);
+
+        done(clip);
+      },
+      { crossOrigin: "anonymous" }
+    );
+  }
+
+  /**
+   * Create overlay "frame" image (optional) that sits on TOP for visual guidance.
+   * This is separate from clipPath, so it must be its own fabric.Image instance.
+   */
+  function ensureFrontOverlay() {
+    if (!dataImgClipping) return;
+
+    if (frontOverlay) {
+      canvas.bringToFront(frontOverlay);
+      return;
+    }
+
+    fabric.Image.fromURL(
+      dataImgClipping,
+      function (overlayImg) {
+        overlayImg.set({
+          originX: "center",
+          originY: "center",
+          left: canvas.width / 2,
+          top: canvas.height / 2,
+          selectable: false,
+          evented: false,
+          absolutePositioned: true,
+          hoverCursor: "default",
+        });
+
+        overlayImg.scaleToWidth(canvas.width);
+        overlayImg.scaleToHeight(canvas.height);
+
+        frontOverlay = overlayImg;
+        canvas.add(frontOverlay);
+        canvas.bringToFront(frontOverlay);
+        canvas.renderAll();
+      },
+      { crossOrigin: "anonymous" }
+    );
+  }
 
   function removePreviousUserImages() {
     const toRemove = canvas.getObjects().filter(function (obj) {
@@ -25,29 +137,23 @@ jQuery(function ($) {
   }
 
   function exportCanvasPNG() {
-    // Ensure selection borders/controls are not rendered into the export
     canvas.discardActiveObject();
     canvas.renderAll();
 
-    const dataURL = canvas.toDataURL({
+    return canvas.toDataURL({
       format: "png",
       quality: 1,
       enableRetinaScaling: true,
     });
-
-    return dataURL;
   }
 
   /**
-   * 1️⃣ Load product image as background
+   * 1) Load product image as background
    */
   fabric.Image.fromURL(
     wcpduCustomizer.productImage,
     function (img) {
-      const scale = Math.min(
-        canvas.width / img.width,
-        canvas.height / img.height,
-      );
+      const scale = Math.min(canvas.width / img.width, canvas.height / img.height);
 
       img.set({
         originX: "center",
@@ -59,13 +165,17 @@ jQuery(function ($) {
       });
 
       img.scale(scale);
-      canvas.setBackgroundImage(img, canvas.renderAll.bind(canvas));
+
+      canvas.setBackgroundImage(img, function () {
+        canvas.renderAll();
+        ensureFrontOverlay();
+      });
     },
-    { crossOrigin: "anonymous" },
+    { crossOrigin: "anonymous" }
   );
 
   /**
-   * 2️⃣ Upload image → PREVIEW ONLY (NO AJAX)
+   * 2) Upload image → Preview only (NO AJAX)
    */
   $("#wcpdu-upload-image").on("change", function (e) {
     const file = e.target.files[0];
@@ -77,23 +187,38 @@ jQuery(function ($) {
 
     const reader = new FileReader();
     reader.onload = function (evt) {
-      fabric.Image.fromURL(evt.target.result, function (img) {
-        img.set({
-          left: canvas.width / 2,
-          top: canvas.height / 2,
-          originX: "center",
-          originY: "center",
-          cornerColor: "#2271b1",
-          borderColor: "#2271b1",
-          cornerSize: 10,
-          transparentCorners: false,
-          wcpduType: "user-image",
-        });
+      loadClipMask(function (clipPath) {
+        fabric.Image.fromURL(evt.target.result, function (img) {
+          img.set({
+            left: canvas.width / 2,
+            top: canvas.height / 2,
+            originX: "center",
+            originY: "center",
+            cornerColor: "#2271b1",
+            borderColor: "#2271b1",
+            cornerSize: 10,
+            transparentCorners: false,
+            wcpduType: "user-image",
+          });
 
-        img.scaleToWidth(canvas.width * 0.4);
-        canvas.add(img);
-        canvas.setActiveObject(img);
-        canvas.renderAll();
+          // ✅ Apply clipPath (NEW instance each time)
+          if (clipPath) {
+            img.clipPath = clipPath;
+          }
+
+          img.scaleToWidth(canvas.width * 0.4);
+
+          canvas.add(img);
+          canvas.setActiveObject(img);
+
+          // Keep overlay on top
+          ensureFrontOverlay();
+          if (frontOverlay) {
+            canvas.bringToFront(frontOverlay);
+          }
+
+          canvas.renderAll();
+        });
       });
     };
 
@@ -101,7 +226,7 @@ jQuery(function ($) {
   });
 
   /**
-   * 3️⃣ Remove selected object
+   * 3) Remove selected object
    */
   function restoreUploadLabel() {
     var $p = $("#file-name");
@@ -124,25 +249,22 @@ jQuery(function ($) {
   }
 
   function removeUserImageLayer() {
-    if (
-      !window.wcpduFabricCanvas ||
-      typeof window.wcpduFabricCanvas.getObjects !== "function"
-    ) {
+    if (!window.wcpduFabricCanvas || typeof window.wcpduFabricCanvas.getObjects !== "function") {
       return;
     }
 
-    var canvas = window.wcpduFabricCanvas;
+    var c = window.wcpduFabricCanvas;
 
-    var toRemove = canvas.getObjects().filter(function (obj) {
+    var toRemove = c.getObjects().filter(function (obj) {
       return obj && obj.wcpduType === "user-image";
     });
 
     toRemove.forEach(function (obj) {
-      canvas.remove(obj);
+      c.remove(obj);
     });
 
-    canvas.discardActiveObject();
-    canvas.renderAll();
+    c.discardActiveObject();
+    c.renderAll();
   }
 
   // Store the default label HTML once (on DOM ready).
@@ -166,12 +288,10 @@ jQuery(function ($) {
   });
 
   /**
-   * 4️⃣ On Add to Cart → export canvas
+   * 4) On Add to Cart → export canvas
    */
   $("form.cart").on("submit", function () {
-    if (!canvas) {
-      return;
-    }
+    if (!canvas) return;
 
     const dataURL = exportCanvasPNG();
 

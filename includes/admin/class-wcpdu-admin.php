@@ -88,11 +88,52 @@ class WCPDU_Admin {
 	 */
 	public function enqueue_assets( $hook ) {
 
-		// Only load on WooCommerce & plugin pages
-		if ( strpos( $hook, 'woocommerce_page_wcpdu-settings' ) === false
-			&& strpos( $hook, 'shop_order' ) === false
-			&& strpos( $hook, 'product' ) === false ) {
+		// 1) Plugin settings page (WooCommerce submenu).
+		if ( 'woocommerce_page_wcpdu-settings' === $hook ) {
+			wp_enqueue_style(
+				'wcpdu-admin',
+				WCPDU_PLUGIN_URL . 'assets/css/admin.css',
+				[],
+				WCPDU_VERSION
+			);
+
+			wp_enqueue_script(
+				'wcpdu-admin',
+				WCPDU_PLUGIN_URL . 'assets/js/admin.js',
+				[ 'jquery' ],
+				WCPDU_VERSION,
+				true
+			);
+
+			wp_localize_script(
+				'wcpdu-admin',
+				'wcpduAdmin',
+				[
+					'nonce' => wp_create_nonce( 'wcpdu_admin_nonce' ),
+				]
+			);
+
 			return;
+		}
+
+		// 2) Product edit/add OR Order edit/add (both use post.php / post-new.php).
+		if ( ! in_array( $hook, [ 'post.php', 'post-new.php' ], true ) ) {
+			return;
+		}
+
+		$screen = function_exists( 'get_current_screen' ) ? get_current_screen() : null;
+		if ( ! $screen || empty( $screen->post_type ) ) {
+			return;
+		}
+
+		// Only load for product + shop_order screens.
+		if ( ! in_array( $screen->post_type, [ 'product', 'shop_order' ], true ) ) {
+			return;
+		}
+
+		// Media uploader needed for product meta image field.
+		if ( 'product' === $screen->post_type ) {
+			wp_enqueue_media();
 		}
 
 		wp_enqueue_style(
